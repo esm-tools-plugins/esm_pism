@@ -16,7 +16,7 @@ would also start ``AWI-ESM``, ``MPI-ESM``, ``OpenIFS`` and similar models::
 
 A summary video describing how to set up your ``experiment_config.yaml`` file is given below:
 
-..  youtube:: m0nVGR44q0c
+..  youtube:: I2PDO1AU0KU
 
 In addition to `installing the standard ESM-Tools <www.example.com>`_, you
 additionally need to install the PISM Plugin::
