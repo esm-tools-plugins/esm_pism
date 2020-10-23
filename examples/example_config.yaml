@@ -1,0 +1,72 @@
+general:
+        setup_name: pism
+        compute_time: "00:20:00"
+        initial_date: "2000-01-01"
+        final_date: "2500-01-01"
+        base_dir: /work/ollie/pgierz/test_esmtools/experiments/
+        clean_old_rundirs_keep_every: 5
+        clean_old_rundirs_except: 2
+        nyear: 100
+
+pism:
+        debug_override_file_generation: True
+        domain: "antarctica"
+        resolution: "16km"
+        model_dir: /work/ollie/pgierz/test_esmtools/model_codes/pism-github1.2.1/
+        bin_dir: /home/ollie/lackerma/pism/bin/ 
+        lresume: 1
+        ini_parent_exp_id: "pism_antarctica01"  # Needed, but not used
+        ini_parent_date: "0001-01-01" # Needed, but not used
+        ini_restart_dir: "/work/ollie/lackerma/awicm_pism_tests/pism_antarctica01/restart/pism"  # Needed, but not used.
+
+        # This is the actual spinup file from the last experiment:
+        spinup_file: "/work/ollie/pgierz/test_esmtools/input_files_from_lars/pismr_antarctica_16km.spinup_start.nc"
+
+        flags:
+                - "no_subgl_basal_melt"
+                - "subgl"
+        # Evaluates to flags in the pism command:
+        # ./pismr -no_subgl_basal_melt -subgl
+        kw_pairs:
+                verbose: 2
+        # Evalues to key-value pairs like this:
+        # ./pismr -verbose 2
+
+        # ./pismr -atmosphere given,lapse_rate -atmosphere_given_file climate_forcing_LIG_16km_monthly.nc -atmosphere_given_period 1 -atmosphere.use_precip_linear_factor_for_temperature no -surface pdd -surface_lapse_rate_file usurf_echam_PI_LIG.nc -low_temp 100
+        overrides_kw_pairs:
+                verbose: 5
+                "atmosphere.use_precip_linear_factor_for_temperature": "no"
+                "my_wonderful_config_option": 88
+
+        forcing_input_dir: "/work/ollie/pgierz/test_esmtools/forcing_files_from_lars/"
+        couplers:
+                atmosphere:
+                    given:
+                        files:
+                            atmosphere_given_file: "${forcing_input_dir}/climate_forcing_LIG_16km_monthly.nc"
+                        kv_pairs:
+                            atmosphere_given_period: 1
+                            atmosphere.use_precip_linear_factor_for_temperature: "no"
+                    lapse_rate:
+                        files:
+                            atmosphere_lapse_rate_file: "${forcing_input_dir}/usurf_echam_PI_LIG.nc"
+                        kv_pairs:
+                            temp_lapse_rate: 7.9
+                            precip_lapse_rate: 0
+                            smb_lapse_rate: 0
+                surface:
+                   pdd: 
+                        files:
+                                surface_lapse_rate_file: "${forcing_input_dir}/usurf_echam_PI_LIG.nc"
+                        kv_pairs:
+                                low_temp: 100
+                ocean:
+                   pico:
+                      files:
+                          frontal_retreat_file: "${forcing_input_dir}/ocean_kill_topg2000m_orkney.nc"
+                          ocean_pico_file: "${forcing_input_dir}/ocean_forcing_8k_fesom_LIG.nc"
+                      flags:
+                              - "pik"
+                              - "kill_icebergs"
+                      kv_pairs:
+                              sea_level: "constant"

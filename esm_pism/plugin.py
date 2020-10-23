@@ -180,6 +180,8 @@ def pism_override_file(config):
     config : dict
         The entire exp config
     """
+    if config["pism"].get("debug_override_file_generation"):
+        import ipdb; ipdb.set_trace()
     pism_config_location = (
         config["pism"].get("config_file")
         or config["pism"]["model_dir"] + "./share/pism/pism_config.nc"
@@ -195,6 +197,7 @@ def pism_override_file(config):
             sys.exit(1)
         new_attrs = {}
         for key, value in config["pism"].get("overrides_kv_pairs", {}).items():
+            logger.debug(f"Overrides file: {key} {value}")
             if key in pism_standard_config.pism_config.attrs:
                 new_attrs[key] = value
                 logger.info(f"The pism_overrides.nc file will contain {key}: {value}")
@@ -242,18 +245,18 @@ def pism_assemble_command(config):
     command_to_run = (
         config["pism"]["executable"]
         + " -i "
-        + os.path.basename(config["pism"]["cli_input_file_pism"])
+        + os.path.basename(config["pism"]["input_in_work"]["input"])
         + f" -ys {config['pism']['current_year']} "
         + f" -y {config['general']['nyear']} "
-        + " ".join(config["pism"]["pism_command_line_opts"])
+        + " ".join(set(config["pism"]["pism_command_line_opts"]))
         + f" -ts_file {config['pism']['output_files']['ts_file']}"
         + f" -ts_vars "
         + ",".join(config["pism"]["ts_vars"])
-        + f" -ts_times "  # TODO(PG)
+        + f" -ts_times {config['pism']['ts_times']}"
         + f" -extra_file {config['pism']['output_files']['ex_file']}"
         + " -extra_vars "
         + ",".join(config["pism"]["ex_vars"])
-        + f" -extra_times "  # TODO(PG)
+        + f" -extra_times {config['pism']['ex_times']}"
         + f" -o {config['pism']['restart_out_in_workdir']['restart']}"
         + f" -o_size {config['pism']['output_size']} -options_left"
     )
