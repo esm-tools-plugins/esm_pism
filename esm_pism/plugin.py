@@ -181,7 +181,7 @@ def pism_override_file(config):
         The entire exp config
     """
     if config["pism"].get("debug_override_file_generation"):
-        import ipdb; ipdb.set_trace()
+        import pdb; pdb.set_trace()
     pism_config_location = (
         config["pism"].get("config_file")
         or config["pism"]["model_dir"] + "./share/pism/pism_config.nc"
