@@ -9,7 +9,7 @@ general:
         nyear: 100
 
 pism:
-        debug_override_file_generation: True
+        debug_override_file_generation: False
         domain: "antarctica"
         resolution: "16km"
         model_dir: /work/ollie/pgierz/test_esmtools/model_codes/pism-github1.2.1/
@@ -27,13 +27,13 @@ pism:
                 - "subgl"
         # Evaluates to flags in the pism command:
         # ./pismr -no_subgl_basal_melt -subgl
-        kw_pairs:
+        kv_pairs:
                 verbose: 2
         # Evalues to key-value pairs like this:
         # ./pismr -verbose 2
 
         # ./pismr -atmosphere given,lapse_rate -atmosphere_given_file climate_forcing_LIG_16km_monthly.nc -atmosphere_given_period 1 -atmosphere.use_precip_linear_factor_for_temperature no -surface pdd -surface_lapse_rate_file usurf_echam_PI_LIG.nc -low_temp 100
-        overrides_kw_pairs:
+        overrides_kv_pairs:
                 verbose: 5
                 "atmosphere.use_precip_linear_factor_for_temperature": "no"
                 "my_wonderful_config_option": 88
