@@ -245,20 +245,20 @@ def pism_assemble_command(config):
     command_to_run = (
         config["pism"]["executable"]
         + " -i "
-        + os.path.basename(config["pism"]["input_in_work"]["input"])
+        + os.path.basename(config["pism"]["input_targets"]["input"])
         + f" -ys {config['pism']['current_year']} "
         + f" -y {config['general']['nyear']} "
         + " ".join(set(config["pism"]["pism_command_line_opts"]))
-        + f" -ts_file {config['pism']['output_files']['ts_file']}"
+        + f" -ts_file {config['pism']['outdata_sources']['ts_file']}"
         + f" -ts_vars "
         + ",".join(config["pism"]["ts_vars"])
         + f" -ts_times {config['pism']['ts_times']}"
-        + f" -extra_file {config['pism']['output_files']['ex_file']}"
+        + f" -extra_file {config['pism']['outdata_sources']['ex_file']}"
         + " -extra_vars "
         + ",".join(config["pism"]["ex_vars"])
         + f" -extra_times {config['pism']['ex_times']}"
         + f" -o {config['pism']['restart_out_in_workdir']['restart']}"
-        + f" -o_size {config['pism']['output_size']} -options_left"
+        + f" -o_size {config['pism']['outdata_size']} -options_left"
     )
 
     logger.critical("PISM will be run like this:")
