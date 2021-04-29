@@ -257,7 +257,7 @@ def pism_assemble_command(config):
         + " -extra_vars "
         + ",".join(config["pism"]["ex_vars"])
         + f" -extra_times {config['pism']['ex_times']}"
-        + f" -o {config['pism']['restart_out_in_workdir']['restart']}"
+        + f" -o {config['pism']['restart_out_sources']['restart']}"
         + f" -o_size {config['pism']['outdata_size']} -options_left"
     )
 
