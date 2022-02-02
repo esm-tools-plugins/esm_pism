@@ -6,6 +6,14 @@ import xarray as xr
 
 VALID_PISM_COUPLERS = ["ocean", "surface", "atmosphere"]
 
+def _kv_list_to_dict_of_dicts(kv_list):
+    new_dict = {}
+    for item in kv_list:
+        if not isinstance(item, dict):
+            raise TypeError("Something in one of your kv_pairs is not correct. These should be lists or dictionaries!")
+        else:
+            new_dict.update(item)
+    return new_dict
 
 @logger.catch
 def _add_files(coupler_files, config):
@@ -34,6 +42,8 @@ def _add_files(coupler_files, config):
 @logger.catch
 def _add_kv(coupler_key_value, config):
     """Adds kv pairs for a coupler"""
+    if isinstance(coupler_key_value, list):
+        coupler_key_value = _kv_list_to_dict_of_dicts(coupler_key_value)
     return [
         f"{key} {value}" if key.startswith("-") else f"-{key} {value}"
         for key, value in coupler_key_value.items()
@@ -121,6 +131,7 @@ def pism_set_kv_pairs(config):
     config : dict
         The entire exp config
     """
+
     
     # LA: add dual hemipshere option
     if "pism_nh" in config:
@@ -131,7 +142,10 @@ def pism_set_kv_pairs(config):
         pism_key = "pism"
     
     kv_pairs = config[pism_key].get("kv_pairs", {})
+    if isinstance(kv_pairs, list):
+        kv_pairs = _kv_list_to_dict_of_dicts(kv_pairs)
     pism_command_line_opts = config[pism_key].get("pism_command_line_opts", [])
+
     pism_command_line_opts += [
         f"{key} {value}" if key.startswith("-") else f"-{key} {value}"
         for key, value in kv_pairs.items()
@@ -241,7 +255,10 @@ def pism_override_file(config):
             logger.error(pism_config_location)
             sys.exit(1)
         new_attrs = {}
-        for key, value in config[pism_key].get("overrides_kv_pairs", {}).items():
+        overrides_kv_pairs = config[pism_key].get("overrides_kv_pairs", {})
+        if isinstance(overrides_kv_pairs, list):
+            overrides_kv_pairs = _kv_list_to_dict_of_dicts(overrides_kv_pairs)
+        for key, value in overrides_kv_pairs.items():
             logger.debug(f"Overrides file: {key} {value}")
             if key in pism_standard_config.pism_config.attrs:
                 new_attrs[key] = value
