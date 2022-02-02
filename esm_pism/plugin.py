@@ -9,7 +9,7 @@ VALID_PISM_COUPLERS = ["ocean", "surface", "atmosphere"]
 def _kv_list_to_dict_of_dicts(kv_list):
     new_dict = {}
     for item in kv_list:
-        is not isinstance(item, dict):
+        if not isinstance(item, dict):
             raise TypeError("Something in one of your kv_pairs is not correct. These should be lists or dictionaries!")
         else:
             new_dict.update(item)
